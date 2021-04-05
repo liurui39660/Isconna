@@ -1,8 +1,10 @@
+#include <vector>
+
 #include <mio/mmap.hpp>
+#include <AUROC.hpp>
 
 #include "EdgeOnlyCore.hpp"
 #include "EdgeNodeCore.hpp"
-#include "AUROC.hpp"
 
 int main(int argc, char* argv[]) {
 	// Parameter
