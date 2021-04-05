@@ -1,0 +1,122 @@
+= Isconna
+Rui LIU (@liurui39660)
+:toc: preamble
+
+C++ implementation of
+
+    Isconna: Streaming Anomaly Detection with Frequency and Patterns. Rui Liu, Siddharth Bhatia, Bryan Hooi. Under review.
+
+image::asset/Overview.Flowchart.svg[]
+
+== Demo
+
+No matter which method, the following steps are necessary.
+
+. Open a terminal (Linux/macOS) or a Visual Studio Developer Command Prompt (Windows)
+. `cd` to the project root `Isconna`
+. `mkdir out`
+. `tar -xf data/data.zip -C data`
+** This also works for Windows 10
+
+=== Standalone
+
+If you want to build and run directly on your machine ...
+
+. `git clone https://github.com/liurui39660/AUROC dep/AUROC`
+. `git clone https://github.com/mandreyel/mio dep/mio`
+. `cmake -DCMAKE_BUILD_TYPE=Release -GNinja -S . -B build/release`
+** You can remove `-GNinja` if you don't have https://github.com/ninja-build/ninja/releases/latest[`ninja`]
+. `cmake --build build/release --target Demo`
+. `build\release\Demo.exe` (Windows) or `build/release/Demo` (Linux/macOS)
+
+The demo runs Isconna-EO on CIC-IDS2018 (`data/CIC-IDS2018/processed/Data.csv`) and prints ROC-AUC.
+`out/Score.tsv` remains empty.
+
+=== Docker
+
+If you want to use docker, at the cost of some speed ...
+
+. `docker build -t isconna .`
+. `docker run -v %cd%\data:/Isconna/data -v %cd%\out:/Isconna/out isconna`
+
+This does the same thing as the standalone method.
+
+== Requirement
+
+.Core
+* C++11
+
+.Demo
+* https://github.com/mandreyel/mio[mio] (memory mapping, i.e., I/O)
+* https://github.com/liurui39660/AUROC[AUROC] (metric)
+
+.Experiment
+* https://github.com/mandreyel/mio[mio] (memory mapping, i.e., I/O)
+* https://github.com/liurui39660/AUROC[AUROC] (metric)
+* TBB (`libtbb-dev`, parallelization)
+* SQLite (`libsqlite3-dev`, result storage)
+
+== Customization
+
+Only for the demo (`example/Demo.cpp`).
+
+=== Export Raw Scores
+
+Change `shouldExportRawScore` to `true`.
+
+`out/Score.tsv` has 4 columns:
+
+* Final anomaly score
+* Unweighted frequency score
+* Unweighted width score
+* Unweighted gap score
+
+=== Switch Cores
+
+Cores are declared within the body. +
+You can search for the variable `isc`. +
+Then uncomment the chosen core, and comment out the others.
+
+=== Different Parameters / Datasets
+
+Parameters and dataset paths are specified in the Parameter section of the code.
+
+=== External Dataset + `Demo.cpp`
+
+You need to prepare three files:
+
+* Meta file
+** Only includes an integer `n`, the number of records in the dataset
+** Assign its path to `pathMeta`
+** E.g., `data/CIC-IDS2018/processed/Meta.txt`
+* Data file
+** A header-less csv file with shape `[n,3]`
+** Each row includes 3 integers
+*** Source
+*** Destination
+*** Timestamp
+**** Starts from 1
+** Assign its path to `pathData`
+** E.g., `data/CIC-IDS2018/processed/Data.csv`
+* Label file
+** A header-less text file with shape `[n,1]`
+** Each row includes 1 integer, the label
+*** 0 if normal
+*** 1 if anomalous
+** Assign its path to `pathLabel`
+** E.g., `data/CIC-IDS2018/processed/Label.csv`
+
+=== External Dataset + Custom Runner
+
+. Include headers `src/EdgeNodeCore.hpp` and/or `src/EdgeOnlyCore.hpp`
+. Instantiate cores with required parameters
+** Number of CMS rows
+** Number of CMS columns
+** Decay factor
+*** 0 by default, i.e., keep nothing
+. Call `operator()` on individual records
+** Unweighted intermediate scores are returned via the last 3 arguments
+
+== Feedback
+
+If you have any suggestion about this document, source code, etc., please feel free to open an issue.
