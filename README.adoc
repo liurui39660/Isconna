@@ -17,11 +17,11 @@ toc::[]
 
 == Demo
 
-If you forgot to add `--recursive` flag when cloning this repo, you can this command
+If you find `dep/AUROC` and `dep/mio` are empty, use this command to clone the dependencies.
 
 `git submodule update --init`
 
-No matter which method, the following steps are necessary.
+The following steps are necessary before choosing the standalone or the docker build.
 
 . Open a terminal (Linux/macOS) or a Visual Studio Developer Command Prompt (Windows)
 . `cd` to the project root `Isconna`
@@ -99,18 +99,13 @@ You need to prepare three files:
 ** E.g., `data/CIC-IDS2018/processed/Meta.txt`
 * Data file
 ** A header-less csv file with shape `[n,3]`
-** Each row includes 3 integers
-*** Source
-*** Destination
-*** Timestamp
-**** Starts from 1
+** Each row includes 3 integers: source, destination and timestamp
+** Timestamps should start from 1 and be continuous
 ** Assign its path to `pathData`
 ** E.g., `data/CIC-IDS2018/processed/Data.csv`
 * Label file
 ** A header-less text file with shape `[n,1]`
-** Each row includes 1 integer, the label
-*** 0 if normal
-*** 1 if anomalous
+** Each row includes 1 integer: 0 if normal, 1 if anomalous
 ** Assign its path to `pathLabel`
 ** E.g., `data/CIC-IDS2018/processed/Label.csv`
 
@@ -120,8 +115,7 @@ You need to prepare three files:
 . Instantiate cores with required parameters
 ** Number of CMS rows
 ** Number of CMS columns
-** Decay factor
-*** 0 by default, i.e., keep nothing
+** Decay factor (default is 0, i.e., keep nothing)
 . Call `operator()` on individual records
 ** Unweighted intermediate scores are returned via the last 3 arguments
 
