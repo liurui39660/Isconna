@@ -1,12 +1,16 @@
 = Isconna
 Rui LIU (@liurui39660)
 :toc: macro
+:toc-title:
 
 C++ implementation of
 
 * https://arxiv.org/pdf/2104.01632::[Isconna: Streaming Anomaly Detection with Frequency and Patterns]. _Rui Liu, Siddharth Bhatia, Bryan Hooi_. (Under Review)
 
 image::asset/Overview.Flowchart.svg[]
+
+[discrete]
+=== Table of Contents
 
 toc::[]
 
