@@ -1,0 +1,6 @@
+[submodule "dep/AUROC"]
+	path = dep/AUROC
+	url = https://github.com/liurui39660/AUROC.git
+[submodule "dep/mio"]
+	path = dep/mio
+	url = https://github.com/mandreyel/mio.git
