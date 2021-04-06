@@ -1,6 +1,5 @@
 = Isconna
 Rui LIU (@liurui39660)
-:hardbreaks-option:
 :toc: macro
 :toc-title:
 
@@ -49,6 +48,7 @@ If you want to use docker, at the cost of some speed ...
 . `docker run -v %cd%\data:/Isconna/data -v %cd%\out:/Isconna/out isconna`
 
 This does the same thing as the standalone method.
+
 The image also includes dependencies for experiments.
 
 == Requirement
@@ -74,12 +74,9 @@ Only for the demo (`example/Demo.cpp`).
 
 Change `shouldExportRawScore` to `true`.
 
-`out/Score.tsv` has 4 columns:
+`out/Score.tsv` has 4 columns: the final anomaly score, the unweighted frequency, width and gap scores.
 
-* Final anomaly score
-* Unweighted frequency score
-* Unweighted width score
-* Unweighted gap score
+`out/Score.tsv` is a tab-separated values file.
 
 === Switch Cores
 
