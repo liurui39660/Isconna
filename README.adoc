@@ -1,12 +1,14 @@
 = Isconna
 Rui LIU (@liurui39660)
-:toc: preamble
+:toc: macro
 
 C++ implementation of
 
-    Isconna: Streaming Anomaly Detection with Frequency and Patterns. Rui Liu, Siddharth Bhatia, Bryan Hooi. Under review.
+* https://arxiv.org/pdf/2104.01632::[Isconna: Streaming Anomaly Detection with Frequency and Patterns]. _Rui Liu, Siddharth Bhatia, Bryan Hooi_. (Under Review)
 
 image::asset/Overview.Flowchart.svg[]
+
+toc::[]
 
 == Demo
 
@@ -116,6 +118,21 @@ You need to prepare three files:
 *** 0 by default, i.e., keep nothing
 . Call `operator()` on individual records
 ** Unweighted intermediate scores are returned via the last 3 arguments
+
+== Citation
+
+Please consider citing our arXiv preprint if you want to use our code for you research.
+
+----
+@misc{liu2021isconna,
+      title={Isconna: Streaming Anomaly Detection with Frequency and Patterns},
+      author={Rui Liu and Siddharth Bhatia and Bryan Hooi},
+      year={2021},
+      eprint={2104.01632},
+      archivePrefix={arXiv},
+      primaryClass={cs.LG}
+}
+----
 
 == Feedback
 
