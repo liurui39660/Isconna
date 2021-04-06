@@ -17,6 +17,10 @@ toc::[]
 
 == Demo
 
+If you forgot to add `--recursive` flag when cloning this repo, you can this command
+
+`git submodule update --init`
+
 No matter which method, the following steps are necessary.
 
 . Open a terminal (Linux/macOS) or a Visual Studio Developer Command Prompt (Windows)
@@ -29,15 +33,13 @@ No matter which method, the following steps are necessary.
 
 If you want to build and run directly on your machine ...
 
-. `git clone https://github.com/liurui39660/AUROC dep/AUROC`
-. `git clone https://github.com/mandreyel/mio dep/mio`
 . `cmake -DCMAKE_BUILD_TYPE=Release -GNinja -S . -B build/release`
 ** You can remove `-GNinja` if you don't have https://github.com/ninja-build/ninja/releases/latest[`ninja`]
 . `cmake --build build/release --target Demo`
 . `build\release\Demo.exe` (Windows) or `build/release/Demo` (Linux/macOS)
 
 The demo runs Isconna-EO on CIC-IDS2018 (`data/CIC-IDS2018/processed/Data.csv`) and prints ROC-AUC.
-`out/Score.tsv` remains empty.
+An empty `out/Score.tsv` will be created.
 
 === Docker
 
@@ -47,6 +49,7 @@ If you want to use docker, at the cost of some speed ...
 . `docker run -v %cd%\data:/Isconna/data -v %cd%\out:/Isconna/out isconna`
 
 This does the same thing as the standalone method.
+The image also includes dependencies for experiments.
 
 == Requirement
 
