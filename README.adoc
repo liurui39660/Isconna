@@ -1,5 +1,6 @@
 = Isconna
 Rui LIU (@liurui39660)
+:hardbreaks-option:
 :toc: macro
 :toc-title:
 
@@ -79,9 +80,7 @@ Change `shouldExportRawScore` to `true`.
 
 === Switch Cores
 
-Cores are declared within the body. +
-You can search for the variable `isc`. +
-Then uncomment the chosen core, and comment out the others.
+Cores are declared within the body. You can search for the variable `isc`, then uncomment the chosen core, and comment out the others.
 
 === Different Parameters / Datasets
 
