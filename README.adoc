@@ -59,11 +59,11 @@ The image also includes dependencies for experiments.
 
 .Demo
 * https://github.com/mandreyel/mio[mio] (memory mapping, i.e., I/O)
-* https://github.com/liurui39660/AUROC[AUROC] (metric)
+* https://github.com/liurui39660/AUROC[AUROC] (replace `sklearn.metrics.roc_auc_score`)
 
 .Experiment
 * https://github.com/mandreyel/mio[mio] (memory mapping, i.e., I/O)
-* https://github.com/liurui39660/AUROC[AUROC] (metric)
+* https://github.com/liurui39660/AUROC[AUROC] (replace `sklearn.metrics.roc_auc_score`)
 * TBB (`libtbb-dev`, parallelization)
 * SQLite (`libsqlite3-dev`, result storage)
 
