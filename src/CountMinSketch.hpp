@@ -94,12 +94,6 @@ struct CountMinSketch {
 		return indexOut;
 	}
 
-	T Assign(const int* index, T with) const {
-		for (int i = 0; i < r; i++)
-			data[index[i]] = with;
-		return with;
-	}
-
 	void Add(const int* index, T by = T{1}) const {
 		for (int i = 0; i < r; i++)
 			data[index[i]] += by;
