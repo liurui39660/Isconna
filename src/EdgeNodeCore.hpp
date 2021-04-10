@@ -22,9 +22,12 @@ struct EdgeNodeCore {
 
 	EdgeNodeCore(int row, int col, double zeta = 0):
 		zeta(zeta), index(new int[row]),
-		ebCur(row, col), ebAcc(row, col, ebCur.param), efCur(row, col), efAcc(row, col, efCur.param),
-		sbCur(row, col), sbAcc(row, col, sbCur.param), sfCur(row, col), sfAcc(row, col, sfCur.param),
-		dbCur(row, col), dbAcc(row, col, dbCur.param), dfCur(row, col), dfAcc(row, col, dfCur.param),
+		ebCur(row, col), ebAcc(row, col, ebCur.param),
+		sbCur(row, col), sbAcc(row, col, sbCur.param),
+		dbCur(row, col), dbAcc(row, col, dbCur.param),
+		efCur(row, col, ebCur.param), efAcc(row, col, ebCur.param),
+		sfCur(row, col, sbCur.param), sfAcc(row, col, sbCur.param),
+		dfCur(row, col, dbCur.param), dfAcc(row, col, dbCur.param),
 		ewCur(row, col, ebCur.param), ewAcc(row, col, ebCur.param), ewTime(row, col, ebCur.param),
 		egCur(row, col, ebCur.param), egAcc(row, col, ebCur.param), egTime(row, col, ebCur.param),
 		swCur(row, col, sbCur.param), swAcc(row, col, sbCur.param), swTime(row, col, sbCur.param),

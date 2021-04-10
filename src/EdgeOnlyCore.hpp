@@ -17,7 +17,7 @@ struct EdgeOnlyCore {
 	EdgeOnlyCore(int row, int col, double zeta = 0):
 		zeta(zeta), index(new int[row]),
 		bCur(row, col), bAcc(row, col, bCur.param),
-		fCur(row, col), fAcc(row, col, fCur.param),
+		fCur(row, col, bCur.param), fAcc(row, col, bCur.param),
 		wCur(row, col, bCur.param), wAcc(row, col, bCur.param), wTime(row, col, bCur.param),
 		gCur(row, col, bCur.param), gAcc(row, col, bCur.param), gTime(row, col, bCur.param) {
 		for (int i = 0, I = wTime.len; i < I; i++) wTime[i] = gTime[i] = 1;
