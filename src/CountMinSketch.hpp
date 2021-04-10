@@ -24,27 +24,23 @@ struct CountMinSketch {
 	CountMinSketch(const CountMinSketch&) = delete;
 	CountMinSketch& operator=(const CountMinSketch&) = delete;
 
-	CountMinSketch(int row, int col):
+	CountMinSketch(int row, int col, const int* param = nullptr):
 		r(row), c(col), len(r * c),
 		param(new int[2 * r]),
 		data(new T[len]) {
-		for (int i = 0; i < r; i++) {
+		if (param) {
+			memcpy(this->param, param, 2 * r * sizeof(int));
+		} else {
+			for (int i = 0; i < r; i++) {
 #ifdef NDEBUG
-			param[i] = rand() + 1; // ×0 is not a good idea, see Hash()
-			param[r + i] = rand();
+				this->param[i] = rand() + 1; // ×0 is not a good idea, see Hash()
+				this->param[r + i] = rand();
 #else
-			param[i] = primes3k[i];
-			param[r + i] = primes7k[i];
+				this->param[i] = primes3k[i];
+				this->param[r + i] = primes7k[i];
 #endif
+			}
 		}
-		memset(data, 0, len * sizeof(T));
-	}
-
-	CountMinSketch(int numRow, int numColumn, const int* param):
-		r(numRow), c(numColumn), len(r * c),
-		param(new int[2 * r]),
-		data(new T[len]) {
-		memcpy(this->param, param, 2 * r * sizeof(int));
 		memset(data, 0, len * sizeof(T));
 	}
 
