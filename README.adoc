@@ -136,4 +136,4 @@ Please consider citing our arXiv preprint if you want to use our code for you re
 
 == Feedback
 
-If you have any suggestion about this document, source code, etc., please feel free to open an issue.
+If you have any suggestion, can't understand the algorithm, don't know how to use the experiment code, etc., please feel free to open an issue.
