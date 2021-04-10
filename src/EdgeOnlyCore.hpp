@@ -7,7 +7,7 @@
 namespace Isconna {
 struct EdgeOnlyCore {
 	static constexpr char nameAlg[] = "Isconna-EO";
-	int tInternal = 1;
+	int t = 1;
 	const double zeta;
 	int* const index;
 	CountMinSketch<bool> bCur, bAcc;
@@ -32,7 +32,7 @@ struct EdgeOnlyCore {
 	}
 
 	void operator()(int s, int d, int t, double& fSc, double& wSc, double& gSc) {
-		if (tInternal < t) {
+		if (this->t < t) {
 			fCur.MultiplyAll(zeta);
 			for (int i = 0; i < bCur.len; i++) {
 				if (!bCur[i]) {
@@ -46,7 +46,7 @@ struct EdgeOnlyCore {
 			}
 			bAcc.CopyFrom(bCur);
 			bCur.ClearAll();
-			tInternal = t;
+			this->t = t;
 		}
 		fCur.Hash(index, s, d);
 		fCur.Add(index);

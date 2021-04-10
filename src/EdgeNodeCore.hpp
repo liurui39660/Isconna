@@ -11,7 +11,7 @@ struct EdgeNodeCore {
 	using CMSf = CountMinSketch<double>;
 	using CMSi = CountMinSketch<int>;
 	static constexpr char nameAlg[] = "Isconna-EN";
-	int tInternal = 1;
+	int t = 1;
 	const double zeta;
 	int* const index;
 	CMSb ebCur, ebAcc, sbCur, sbAcc, dbCur, dbAcc;
@@ -91,17 +91,17 @@ struct EdgeNodeCore {
 		}
 		const auto wIndex = wTime.ArgMin(index);
 		const auto gIndex = gTime.ArgMin(index);
-		fSc = ComputeScore(fCur(index), fAcc(index), tInternal);
+		fSc = ComputeScore(fCur(index), fAcc(index), this->t);
 		wSc = ComputeScore(wCur[wIndex], wAcc[wIndex], wTime[wIndex]);
 		gSc = ComputeScore(gCur[gIndex], gAcc[gIndex], gTime[gIndex]);
 	}
 
 	void operator()(int s, int d, int t, double& fSc, double& wSc, double& gSc) {
-		if (tInternal < t) {
+		if (this->t < t) {
 			ResetComponent(efCur, ebCur, ebAcc, egCur, egAcc, egTime);
 			ResetComponent(sfCur, sbCur, sbAcc, sgCur, sgAcc, sgTime);
 			ResetComponent(dfCur, dbCur, dbAcc, dgCur, dgAcc, dgTime);
-			tInternal = t;
+			this->t = t;
 		}
 		double efSc, ewSc, egSc, sfSc, swSc, sgSc, dfSc, dwSc, dgSc;
 		UpdateComponent(s, d, efSc, ewSc, egSc, efCur, efAcc, ebCur, ebAcc, ewCur, ewAcc, ewTime, egCur, egAcc, egTime);
