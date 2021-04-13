@@ -20,9 +20,9 @@ struct EdgeOnlyCore {
 		fCur(row, col, bCur.param), fAcc(row, col, bCur.param),
 		wCur(row, col, bCur.param), wAcc(row, col, bCur.param), wTime(row, col, bCur.param),
 		gCur(row, col, bCur.param), gAcc(row, col, bCur.param), gTime(row, col, bCur.param) {
-		for (int i = 0, I = wTime.len; i < I; i++) wTime[i] = gTime[i] = 1;
-		std::fill(wTime.data, wTime.data + wTime.len, 1);
-		std::fill(gTime.data, gTime.data + gTime.len, 1);
+		for (int i = 0, I = wTime.len; i < I; i++) {
+			wTime[i] = gTime[i] = 1;
+		}
 	}
 
 	virtual ~EdgeOnlyCore() { delete[] index; }
