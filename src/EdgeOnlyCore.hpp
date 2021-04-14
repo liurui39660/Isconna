@@ -1,7 +1,6 @@
 #pragma once
 
-#include <cmath>
-#include <cstring> // memset
+#include <valarray>
 
 namespace Isconna {
 struct EdgeOnlyCore {
@@ -11,41 +10,26 @@ struct EdgeOnlyCore {
 	int tsInternal = 1; // Check if a new timestamp comes
 	unsigned* const index; // Due to the same-layout assumption, I only hash once per edge record
 	unsigned* const param; // Hashing parameters, just in case it overflows
-	bool* bCur, * bAcc; // Busy indicators, use the bool type
-	double* fCur, * fAcc, * wCur, * wAcc, * gCur, * gAcc;
-	int* wTime, * gTime; // Not timestamps, I explained this in the paper
+	std::valarray<bool> bCur, bAcc; // Busy indicators, use the bool type
+	std::valarray<double> fCur, fAcc, wCur, wAcc, gCur, gAcc;
+	std::valarray<int> wTime, gTime; // Not timestamps, I explained this in the paper
 
 	EdgeOnlyCore(int row, int col, double zeta = 0):
 		row(row), col(col), zeta(zeta),
 		index(new unsigned[row]), param(new unsigned[2 * row]),
-		bCur(new bool[row * col]), bAcc(new bool[row * col]),
-		fCur(new double[row * col]), fAcc(new double[row * col]),
-		wCur(new double[row * col]), wAcc(new double[row * col]), wTime(new int[row * col]),
-		gCur(new double[row * col]), gAcc(new double[row * col]), gTime(new int[row * col]) {
+		bCur(row * col), bAcc(row * col),
+		fCur(row * col), fAcc(row * col),
+		wCur(row * col), wAcc(row * col), wTime(1, row * col),
+		gCur(row * col), gAcc(row * col), gTime(1, row * col) {
 		for (int i = 0; i < row; i++) {
 			param[i] = rand() + 1; // An unfortunate 0 will index all objects to the same cell
 			param[i + row] = rand();
-		}
-		for (int i = 0, I = row * col; i < I; i++) {
-			bCur[i] = bAcc[i] = false;
-			fCur[i] = fAcc[i] = wCur[i] = wAcc[i] = gCur[i] = gAcc[i] = 0;
-			wTime[i] = gTime[i] = 1;
 		}
 	}
 
 	virtual ~EdgeOnlyCore() {
 		delete[] index;
 		delete[] param;
-		delete[] bCur;
-		delete[] bAcc;
-		delete[] fCur;
-		delete[] fAcc;
-		delete[] wCur;
-		delete[] wAcc;
-		delete[] gCur;
-		delete[] gAcc;
-		delete[] wTime;
-		delete[] gTime;
 	}
 
 	static double GTest(double c, double a, double t) {
@@ -53,7 +37,7 @@ struct EdgeOnlyCore {
 	}
 
 	template<class T>
-	T Query(const T* data) const {
+	T Query(const std::valarray<T>& data) const {
 		T least = data[index[0]];
 		for (int i = 1; i < row; i++)
 			if (least > data[index[i]])
@@ -62,7 +46,7 @@ struct EdgeOnlyCore {
 	}
 
 	template<class T>
-	unsigned ArgQuery(const T* data) const {
+	unsigned ArgQuery(const std::valarray<T>& data) const {
 		unsigned arg = index[0];
 		T least = data[arg];
 		for (int i = 1; i < row; i++)
@@ -75,8 +59,7 @@ struct EdgeOnlyCore {
 
 	double operator()(int src, int dst, int ts, double alpha, double beta, double gamma) {
 		if (tsInternal < ts) {
-			for (int i = 0, I = row * col; i < I; i++) // Vectorization
-				fCur[i] *= zeta;
+			fCur *= zeta;
 			for (int i = 0, I = row * col; i < I; i++) { // No vectorization
 				if (!bCur[i]) {
 					if (bAcc[i]) {
@@ -88,7 +71,7 @@ struct EdgeOnlyCore {
 				}
 			}
 			std::swap(bAcc, bCur);
-			memset(bCur, 0, row * col * sizeof(bool));
+			bCur = false;
 			tsInternal = ts;
 		}
 		for (int i = 0; i < row; i++) {
@@ -107,7 +90,9 @@ struct EdgeOnlyCore {
 		}
 		const auto wIndex = ArgQuery(wTime);
 		const auto gIndex = ArgQuery(gTime);
-		return pow(GTest(Query(fCur), Query(fAcc), ts), alpha) * pow(GTest(wCur[wIndex], wAcc[wIndex], wTime[wIndex]), beta) * pow(GTest(gCur[gIndex], gAcc[gIndex], gTime[gIndex]), gamma);
+		return pow(GTest(Query(fCur), Query(fAcc), ts), alpha)
+			* pow(GTest(wCur[wIndex], wAcc[wIndex], wTime[wIndex]), beta)
+			* pow(GTest(gCur[gIndex], gAcc[gIndex], gTime[gIndex]), gamma);
 	}
 };
 }

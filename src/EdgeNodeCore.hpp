@@ -1,7 +1,6 @@
 #pragma once
 
-#include <cmath>
-#include <algorithm>
+#include <valarray>
 
 namespace Isconna {
 struct EdgeNodeCore {
@@ -11,77 +10,36 @@ struct EdgeNodeCore {
 	int tsInternal = 1;
 	unsigned* const index;
 	unsigned* const param;
-	bool* ebCur, * ebAcc, * sbCur, * sbAcc, * dbCur, * dbAcc;
-	double* efCur, * efAcc, * ewCur, * ewAcc, * egCur, * egAcc;
-	double* sfCur, * sfAcc, * swCur, * swAcc, * sgCur, * sgAcc;
-	double* dfCur, * dfAcc, * dwCur, * dwAcc, * dgCur, * dgAcc;
-	int* ewTime, * egTime, * swTime, * sgTime, * dwTime, * dgTime;
+	std::valarray<bool> ebCur, ebAcc, sbCur, sbAcc, dbCur, dbAcc;
+	std::valarray<double> efCur, efAcc, ewCur, ewAcc, egCur, egAcc;
+	std::valarray<double> sfCur, sfAcc, swCur, swAcc, sgCur, sgAcc;
+	std::valarray<double> dfCur, dfAcc, dwCur, dwAcc, dgCur, dgAcc;
+	std::valarray<int> ewTime, egTime, swTime, sgTime, dwTime, dgTime;
 
 	EdgeNodeCore(int row, int col, double zeta = 0):
 		row(row), col(col), zeta(zeta),
 		index(new unsigned[row]), param(new unsigned[2 * row]),
-		ebCur(new bool[row * col]), ebAcc(new bool[row * col]),
-		efCur(new double[row * col]), efAcc(new double[row * col]),
-		ewCur(new double[row * col]), ewAcc(new double[row * col]), ewTime(new int[row * col]),
-		egCur(new double[row * col]), egAcc(new double[row * col]), egTime(new int[row * col]),
-		sbCur(new bool[row * col]), sbAcc(new bool[row * col]),
-		sfCur(new double[row * col]), sfAcc(new double[row * col]),
-		swCur(new double[row * col]), swAcc(new double[row * col]), swTime(new int[row * col]),
-		sgCur(new double[row * col]), sgAcc(new double[row * col]), sgTime(new int[row * col]),
-		dbCur(new bool[row * col]), dbAcc(new bool[row * col]),
-		dfCur(new double[row * col]), dfAcc(new double[row * col]),
-		dwCur(new double[row * col]), dwAcc(new double[row * col]), dwTime(new int[row * col]),
-		dgCur(new double[row * col]), dgAcc(new double[row * col]), dgTime(new int[row * col]) {
+		ebCur(row * col), ebAcc(row * col),
+		efCur(row * col), efAcc(row * col),
+		ewCur(row * col), ewAcc(row * col), ewTime(1, row * col),
+		egCur(row * col), egAcc(row * col), egTime(1, row * col),
+		sbCur(row * col), sbAcc(row * col),
+		sfCur(row * col), sfAcc(row * col),
+		swCur(row * col), swAcc(row * col), swTime(1, row * col),
+		sgCur(row * col), sgAcc(row * col), sgTime(1, row * col),
+		dbCur(row * col), dbAcc(row * col),
+		dfCur(row * col), dfAcc(row * col),
+		dwCur(row * col), dwAcc(row * col), dwTime(1, row * col),
+		dgCur(row * col), dgAcc(row * col), dgTime(1, row * col) {
 		for (int i = 0; i < row; i++) {
 			param[i] = rand() + 1;
 			param[i + row] = rand();
-		}
-		for (int i = 0, I = row * col; i < I; i++) {
-			ebCur[i] = ebAcc[i] = false;
-			efCur[i] = efAcc[i] = ewCur[i] = ewAcc[i] = egCur[i] = egAcc[i] = 0;
-			ewTime[i] = egTime[i] = 1;
-			sbCur[i] = sbAcc[i] = false;
-			sfCur[i] = sfAcc[i] = swCur[i] = swAcc[i] = sgCur[i] = sgAcc[i] = 0;
-			swTime[i] = sgTime[i] = 1;
-			dbCur[i] = dbAcc[i] = false;
-			dfCur[i] = dfAcc[i] = dwCur[i] = dwAcc[i] = dgCur[i] = dgAcc[i] = 0;
-			dwTime[i] = dgTime[i] = 1;
 		}
 	}
 
 	virtual ~EdgeNodeCore() {
 		delete[] index;
 		delete[] param;
-		delete[] ebCur;
-		delete[] ebAcc;
-		delete[] efCur;
-		delete[] efAcc;
-		delete[] ewCur;
-		delete[] ewAcc;
-		delete[] ewTime;
-		delete[] egCur;
-		delete[] egAcc;
-		delete[] egTime;
-		delete[] sbCur;
-		delete[] sbAcc;
-		delete[] sfCur;
-		delete[] sfAcc;
-		delete[] swCur;
-		delete[] swAcc;
-		delete[] swTime;
-		delete[] sgCur;
-		delete[] sgAcc;
-		delete[] sgTime;
-		delete[] dbCur;
-		delete[] dbAcc;
-		delete[] dfCur;
-		delete[] dfAcc;
-		delete[] dwCur;
-		delete[] dwAcc;
-		delete[] dwTime;
-		delete[] dgCur;
-		delete[] dgAcc;
-		delete[] dgTime;
 	}
 
 	static double GTest(double c, double a, double t) {
@@ -89,7 +47,7 @@ struct EdgeNodeCore {
 	}
 
 	template<class T>
-	T Query(const T* data) const {
+	T Query(const std::valarray<T>& data) const {
 		T least = data[index[0]];
 		for (int i = 1; i < row; i++)
 			if (least > data[index[i]])
@@ -98,7 +56,7 @@ struct EdgeNodeCore {
 	}
 
 	template<class T>
-	unsigned ArgQuery(const T* data) const {
+	unsigned ArgQuery(const std::valarray<T>& data) const {
 		unsigned arg = index[0];
 		T least = data[arg];
 		for (int i = 1; i < row; i++)
@@ -109,7 +67,11 @@ struct EdgeNodeCore {
 		return arg;
 	}
 
-	void ResetComponent(double* fCur, bool*& bCur, bool*& bAcc, double* gCur, double* gAcc, int* gTime) const {
+	void ResetComponent(
+		std::valarray<double>& fCur,
+		std::valarray<bool>& bCur, std::valarray<bool>& bAcc,
+		std::valarray<double>& gCur, std::valarray<double>& gAcc, std::valarray<int>& gTime
+	) const {
 		for (int i = 0, I = row * col; i < I; i++)
 			fCur[i] *= zeta;
 		for (int i = 0, I = row * col; i < I; i++) {
@@ -123,10 +85,16 @@ struct EdgeNodeCore {
 			}
 		}
 		std::swap(bAcc, bCur);
-		memset(bCur, 0, row * col * sizeof(bool));
+		bCur = false;
 	}
 
-	void UpdateComponent(int a, int b, double& fSc, double& wSc, double& gSc, double* fCur, double* fAcc, bool* bCur, const bool* bAcc, double* wCur, double* wAcc, int* wTime, double* gCur, double* gAcc, int* gTime) const {
+	void UpdateComponent(
+		int a, int b, double& fSc, double& wSc, double& gSc,
+		std::valarray<double>& fCur, std::valarray<double>& fAcc,
+		std::valarray<bool>& bCur, const std::valarray<bool>& bAcc,
+		std::valarray<double>& wCur, std::valarray<double>& wAcc, std::valarray<int>& wTime,
+		std::valarray<double>& gCur, std::valarray<double>& gAcc, std::valarray<int>& gTime
+	) const {
 		for (int i = 0; i < row; i++) {
 			index[i] = i * col + ((a + 347 * b) * param[i] + param[i + row]) % col;
 			fCur[index[i]]++;
@@ -159,7 +127,9 @@ struct EdgeNodeCore {
 		UpdateComponent(src, dst, efSc, ewSc, egSc, efCur, efAcc, ebCur, ebAcc, ewCur, ewAcc, ewTime, egCur, egAcc, egTime);
 		UpdateComponent(src, 000, sfSc, swSc, sgSc, sfCur, sfAcc, sbCur, sbAcc, swCur, swAcc, swTime, sgCur, sgAcc, sgTime);
 		UpdateComponent(dst, 000, dfSc, dwSc, dgSc, dfCur, dfAcc, dbCur, dbAcc, dwCur, dwAcc, dwTime, dgCur, dgAcc, dgTime);
-		return pow(std::max({efSc, sfSc, dfSc}), alpha) * pow(std::max({ewSc, swSc, dwSc}), beta) * pow(std::max({egSc, sgSc, dgSc}), gamma);
+		return pow(std::max({ewSc, swSc, dwSc}), beta)
+			* pow(std::max({efSc, sfSc, dfSc}), alpha)
+			* pow(std::max({egSc, sgSc, dgSc}), gamma);
 	}
 };
 }
