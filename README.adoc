@@ -84,11 +84,9 @@ Only for the demo (`example/Demo.cpp`).
 
 === Export Raw Scores
 
-Change `shouldExportRawScore` to `true`.
+Uncomment the `fprintf` in the for loop.
 
-`out/Score.tsv` has 4 columns: the final anomaly score, the unweighted frequency, width and gap scores.
-
-`out/Score.tsv` is a tab-separated values file.
+`out/Score.tsv` has 1 column: the final anomaly score.
 
 === Switch Cores
 
@@ -127,8 +125,14 @@ This is a header-only implementation, you can use it as a library without additi
 ** Number of CMS rows
 ** Number of CMS columns
 ** Decay factor (default is 0, i.e., keep nothing)
-. Call `operator()` on individual records
-** Unweighted intermediate scores are returned via the last 3 arguments
+. Call `operator()` on individual records, the signature includes
+.. Source (categorical)
+.. Destination (categorical)
+.. Timestamp
+.. Weight for the frequency score
+.. Weight for the width score
+.. Weight for the gap score
+.. Return value is the anomaly score
 
 == Citation
 
