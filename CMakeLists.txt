@@ -24,11 +24,22 @@ ADD_COMPILE_DEFINITIONS(
 	SOLUTION_DIR="${CMAKE_SOURCE_DIR}/"
 )
 
-IF(DEFINED ENV{DATASET_DIR}) # Because I don't want a copy in all projects
+# In case you put datasets elsewhere, e.g., using WSL
+IF(DEFINED ENV{DATASET_DIR})
 	FILE(TO_CMAKE_PATH $ENV{DATASET_DIR} DATASET_DIR)
 	ADD_COMPILE_DEFINITIONS(DATASET_DIR="${DATASET_DIR}/")
 ELSE()
 	ADD_COMPILE_DEFINITIONS(DATASET_DIR="${CMAKE_SOURCE_DIR}/data/")
+ENDIF()
+
+# Commonly used optimization flags
+IF(NOT CMAKE_BUILD_TYPE STREQUAL Debug)
+	IF(MSVC)
+		ADD_COMPILE_OPTIONS(/arch:AVX2 /fp:fast /GL /Gw)
+		ADD_LINK_OPTIONS(/LTCG /OPT:REF,ICF) # 4075: /LTCG overwrites /INCREMENTAL
+	ELSE()
+		ADD_COMPILE_OPTIONS(-Ofast -mavx2 -march=native -fwhole-program -funroll-loops)
+	ENDIF()
 ENDIF()
 
 ADD_EXECUTABLE(Demo example/Demo.cpp)

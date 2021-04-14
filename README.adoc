@@ -40,6 +40,17 @@ If you want to build and run directly on your machine ...
 The demo runs Isconna-EO on CIC-IDS2018 (`data/CIC-IDS2018/processed/Data.csv`) and prints ROC-AUC.
 An empty `out/Score.tsv` will be created.
 
+==== WSL2
+
+Basically the same as the Linux build, but some steps are different.
+
+. Decompress `data/data.zip` to WSL's drive, e.g., `/root/Dataset`
+. Set environment variable `DATASET_DIR`, e.g., `export DATASET_DIR=/root/Dataset`
+
+See https://docs.microsoft.com/en-us/windows/wsl/compare-versions for the reason.
+
+WSL1 does not have this issue.
+
 === Docker
 
 If you want to use docker, at the cost of some speed ...

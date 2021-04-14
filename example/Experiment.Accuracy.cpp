@@ -1,5 +1,6 @@
 #include <random>
 
+#include <AUROC.hpp>
 #include <sqlite3.h>
 #include <mio/mmap.hpp>
 #include <tbb/parallel_for_each.h>
@@ -7,7 +8,6 @@
 
 #include "EdgeOnlyCore.hpp"
 #include "EdgeNodeCore.hpp"
-#include "AUROC.hpp"
 
 struct Result {
 	double expFreq;
@@ -120,15 +120,12 @@ int main(int argc, char* argv[]) {
 						const auto auroc = new double[numRepeat];
 						tbb::parallel_for(0, numRepeat, [&](int rep) {
 							srand(randint(eng));
-							// Isconna::EdgeOnlyCore isc(shapeCMS[0], shapeCMS[1], decay);
-							Isconna::EdgeNodeCore isc(shapeCMS[0], shapeCMS[1], decay);
+							Isconna::EdgeOnlyCore isc(shapeCMS[0], shapeCMS[1], decay);
+							// Isconna::EdgeNodeCore isc(shapeCMS[0], shapeCMS[1], decay);
 							nameAlg = isc.nameAlg;
 							const auto score = new double[n];
-							for (int i = 0; i < n; i++) {
-								double scoreFreq, scoreWidth, scoreGap;
-								isc(src[i], dst[i], ts[i], scoreFreq, scoreWidth, scoreGap);
-								score[i] = pow(scoreFreq, expFreq) * pow(scoreWidth, expWidth) * pow(scoreGap, expGap);
-							}
+							for (int i = 0; i < n; i++)
+								score[i] = isc(src[i], dst[i], ts[i], expFreq, expWidth, expGap);
 							auroc[rep] = AUROC(label, score, n);
 							delete[] score;
 						});

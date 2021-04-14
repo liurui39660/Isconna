@@ -1,10 +1,13 @@
 #include <vector>
+#include <chrono>
 
-#include <mio/mmap.hpp>
 #include <AUROC.hpp>
+#include <mio/mmap.hpp>
 
 #include "EdgeOnlyCore.hpp"
 #include "EdgeNodeCore.hpp"
+
+using namespace std::chrono;
 
 int main(int argc, char* argv[]) {
 	// Parameter
@@ -34,7 +37,6 @@ int main(int argc, char* argv[]) {
 	// const auto pathData = DATASET_DIR"CIC-DDoS2019/processed/Data.csv";
 	// const auto pathLabel = DATASET_DIR"CIC-DDoS2019/processed/Label.csv";
 
-	const bool shouldExportRawScore = false;
 	const auto alpha = 1;
 	const auto beta = 1;
 	const auto gamma = 0.5;
@@ -44,66 +46,44 @@ int main(int argc, char* argv[]) {
 	// Random seed
 	// --------------------------------------------------------------------------------
 
-#ifdef NDEBUG
 	const unsigned seed = time(nullptr);
-	printf("Seed = %u\t// In case of reproduction\n", seed);
 	srand(seed);
-#else
-	printf("// Debug build is deterministic");
-#endif
+	printf("Seed = %u\t// In case of reproduction\n", seed);
 
 	// Read dataset
 	// --------------------------------------------------------------------------------
 
 	std::error_code err;
 	const auto fileMeta = mio::make_mmap_source(pathMeta, err);
-	if (err) {
-		printf("%s:%d fileMeta: %s\n", __FILE__, __LINE__, err.message().c_str());
-		exit(EXIT_FAILURE);
-	}
-	const auto n = atoi(fileMeta.data());
-
 	const auto fileData = mio::make_mmap_source(pathData, err);
-	if (err) {
-		printf("%s:%d fileData: %s\n", __FILE__, __LINE__, err.message().c_str());
-		exit(EXIT_FAILURE);
-	}
 	const auto fileLabel = mio::make_mmap_source(pathLabel, err);
-	if (err) {
-		printf("%s:%d fileLabel: %s\n", __FILE__, __LINE__, err.message().c_str());
-		exit(EXIT_FAILURE);
-	}
 	const auto fileScore = fopen(SOLUTION_DIR"out/Score.tsv", "wb");
-	if (!fileScore) {
-		printf("%s:%d fileScore: Cannot create file\n", __FILE__, __LINE__);
-		exit(EXIT_FAILURE);
-	}
+	const auto n = atoi(fileMeta.data());
 
 	// Do the magic
 	// --------------------------------------------------------------------------------
 
-	int source, destination, timestamp;
-	auto itData = fileData.begin() - 1;
-	auto itLabel = fileLabel.begin() - 1;
+	int src, dst, ts;
+	auto iteratorData = fileData.begin() - 1;
+	auto iteratorLabel = fileLabel.begin() - 1;
 	const auto score = new double[n];
 	const auto label = new double[n];
 	Isconna::EdgeOnlyCore isc(shapeCMS[0], shapeCMS[1], zeta);
 	// Isconna::EdgeNodeCore isc(shapeCMS[0], shapeCMS[1], zeta);
+	printf("# Records = %d\t// Algorithm is started\n", n);
+	const auto timeBegin = std::chrono::steady_clock::now();
 	for (int i = 0; i < n; i++) {
-		source = strtol(itData + 1, const_cast<char**>(&itData), 10);
-		destination = strtol(itData + 1, const_cast<char**>(&itData), 10);
-		timestamp = strtol(itData + 1, const_cast<char**>(&itData), 10);
-		double f, w, g;
-		isc(source, destination, timestamp, f, w, g);
-		score[i] = pow(f, alpha) * pow(w, beta) * pow(g, gamma);
-		label[i] = strtol(itLabel + 1, const_cast<char**>(&itLabel), 10);
-		if (shouldExportRawScore)
-			fprintf(fileScore, "%f\t%f\t%f\t%f\n", score[i], f, w, g);
+		src = strtol(iteratorData + 1, const_cast<char**>(&iteratorData), 10);
+		dst = strtol(iteratorData + 1, const_cast<char**>(&iteratorData), 10);
+		ts = strtol(iteratorData + 1, const_cast<char**>(&iteratorData), 10);
+		score[i] = isc(src, dst, ts, alpha, beta, gamma);
+		label[i] = static_cast<int>(strtol(iteratorLabel + 1, const_cast<char**>(&iteratorLabel), 10));
+		// fprintf(fileScore, "%f\n", score[i]);
 	}
-	fclose(fileScore);
-	printf("# Records = %d\t// Process is done\n", n);
-	if (shouldExportRawScore)
+	printf("Time = %lldms\t// Process is done\n", duration_cast<milliseconds>((steady_clock::now() - timeBegin)).count());
+	if(ftell(fileScore)) // If anything is written
 		printf("// Raw scores are exported to\n// %s\n", SOLUTION_DIR"out/Score.tsv");
+	fclose(fileScore);
 
 	// Evaluate scores
 	// --------------------------------------------------------------------------------
