@@ -42,7 +42,7 @@ struct EdgeOnlyCore {
 		for (int i = 1; i < row; i++)
 			if (least > data[index[i]])
 				least = data[index[i]];
-		return least;
+		return least; // Much faster than data[index].min(), 'cause no temp indirect_array
 	}
 
 	template<class T>
