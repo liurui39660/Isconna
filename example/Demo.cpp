@@ -50,7 +50,7 @@ int main(int argc, char* argv[]) {
 	srand(seed);
 	printf("Seed = %u\t// In case of reproduction\n", seed);
 
-	// Read dataset
+	// Open dataset
 	// --------------------------------------------------------------------------------
 
 	std::error_code err;
