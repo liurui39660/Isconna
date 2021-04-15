@@ -57,7 +57,7 @@ int main(int argc, char* argv[]) {
 	const auto fileMeta = mio::make_mmap_source(pathMeta, err);
 	const auto fileData = mio::make_mmap_source(pathData, err);
 	const auto fileLabel = mio::make_mmap_source(pathLabel, err);
-	const auto fileScore = fopen(SOLUTION_DIR"out/Score.tsv", "wb");
+	const auto fileScore = fopen(SOLUTION_DIR"out/Score.txt", "wb");
 	const auto n = atoi(fileMeta.data());
 
 	// Do the magic
@@ -81,7 +81,7 @@ int main(int argc, char* argv[]) {
 	}
 	printf("Time = %lldms\t// Process is done\n", duration_cast<milliseconds>((steady_clock::now() - timeBegin)).count());
 	if(ftell(fileScore)) // If anything is written
-		printf("// Raw scores are exported to\n// %s\n", SOLUTION_DIR"out/Score.tsv");
+		printf("// Raw scores are exported to\n// %s\n", SOLUTION_DIR"out/Score.txt");
 	fclose(fileScore);
 
 	// Evaluate scores
