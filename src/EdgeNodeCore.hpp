@@ -17,20 +17,12 @@ struct EdgeNodeCore {
 	std::valarray<int> ewTime, egTime, swTime, sgTime, dwTime, dgTime;
 
 	EdgeNodeCore(int row, int col, double zeta = 0):
-		row(row), col(col), zeta(zeta),
-		index(new unsigned[row]), param(new unsigned[2 * row]),
-		ebCur(row * col), ebAcc(row * col),
-		efCur(row * col), efAcc(row * col),
-		ewCur(row * col), ewAcc(row * col), ewTime(1, row * col),
-		egCur(row * col), egAcc(row * col), egTime(1, row * col),
-		sbCur(row * col), sbAcc(row * col),
-		sfCur(row * col), sfAcc(row * col),
-		swCur(row * col), swAcc(row * col), swTime(1, row * col),
-		sgCur(row * col), sgAcc(row * col), sgTime(1, row * col),
-		dbCur(row * col), dbAcc(row * col),
-		dfCur(row * col), dfAcc(row * col),
-		dwCur(row * col), dwAcc(row * col), dwTime(1, row * col),
-		dgCur(row * col), dgAcc(row * col), dgTime(1, row * col) {
+		row(row), col(col), zeta(zeta), index(new unsigned[row]), param(new unsigned[2 * row]),
+		ebCur(row * col), ebAcc(row * col), sbCur(row * col), sbAcc(row * col), dbCur(row * col), dbAcc(row * col),
+		efCur(row * col), efAcc(row * col), ewCur(row * col), ewAcc(row * col), egCur(row * col), egAcc(row * col),
+		sfCur(row * col), sfAcc(row * col), swCur(row * col), swAcc(row * col), sgCur(row * col), sgAcc(row * col),
+		dfCur(row * col), dfAcc(row * col), dwCur(row * col), dwAcc(row * col), dgCur(row * col), dgAcc(row * col),
+		ewTime(1, row * col), egTime(1, row * col), swTime(1, row * col), sgTime(1, row * col), dwTime(1, row * col), dgTime(1, row * col) {
 		for (int i = 0; i < row; i++) {
 			param[i] = rand() + 1;
 			param[i + row] = rand();
@@ -50,8 +42,7 @@ struct EdgeNodeCore {
 	T Query(const std::valarray<T>& data) const {
 		T least = data[index[0]];
 		for (int i = 1; i < row; i++)
-			if (least > data[index[i]])
-				least = data[index[i]];
+			least = std::min(least, data[index[i]]);
 		return least;
 	}
 
@@ -72,8 +63,7 @@ struct EdgeNodeCore {
 		std::valarray<bool>& bCur, std::valarray<bool>& bAcc,
 		std::valarray<double>& gCur, std::valarray<double>& gAcc, std::valarray<int>& gTime
 	) const {
-		for (int i = 0, I = row * col; i < I; i++)
-			fCur[i] *= zeta;
+		fCur *= zeta;
 		for (int i = 0, I = row * col; i < I; i++) {
 			if (!bCur[i]) {
 				if (bAcc[i]) {

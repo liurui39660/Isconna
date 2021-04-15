@@ -11,16 +11,14 @@ struct EdgeOnlyCore {
 	unsigned* const index; // Due to the same-layout assumption, I only hash once per edge record
 	unsigned* const param; // Hashing parameters, just in case it overflows
 	std::valarray<bool> bCur, bAcc; // Busy indicators, use the bool type
-	std::valarray<double> fCur, fAcc, wCur, wAcc, gCur, gAcc;
 	std::valarray<int> wTime, gTime; // Not timestamps, I explained this in the paper
+	std::valarray<double> fCur, fAcc, wCur, wAcc, gCur, gAcc;
 
 	EdgeOnlyCore(int row, int col, double zeta = 0):
-		row(row), col(col), zeta(zeta),
-		index(new unsigned[row]), param(new unsigned[2 * row]),
-		bCur(row * col), bAcc(row * col),
-		fCur(row * col), fAcc(row * col),
-		wCur(row * col), wAcc(row * col), wTime(1, row * col),
-		gCur(row * col), gAcc(row * col), gTime(1, row * col) {
+		row(row), col(col), zeta(zeta), index(new unsigned[row]), param(new unsigned[2 * row]),
+		bCur(row * col), bAcc(row * col), wTime(1, row * col), gTime(1, row * col),
+		fCur(row * col), fAcc(row * col), wCur(row * col),
+		wAcc(row * col), gCur(row * col), gAcc(row * col) {
 		for (int i = 0; i < row; i++) {
 			param[i] = rand() + 1; // An unfortunate 0 will index all objects to the same cell
 			param[i + row] = rand();
@@ -40,8 +38,7 @@ struct EdgeOnlyCore {
 	T Query(const std::valarray<T>& data) const {
 		T least = data[index[0]];
 		for (int i = 1; i < row; i++)
-			if (least > data[index[i]])
-				least = data[index[i]];
+			least = std::min(least, data[index[i]]);
 		return least; // Much faster than data[index].min(), 'cause no temp indirect_array
 	}
 

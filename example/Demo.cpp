@@ -63,7 +63,6 @@ int main(int argc, char* argv[]) {
 	// Do the magic
 	// --------------------------------------------------------------------------------
 
-	int src, dst, ts;
 	auto iteratorData = fileData.begin() - 1;
 	auto iteratorLabel = fileLabel.begin() - 1;
 	const auto score = new double[n];
@@ -71,11 +70,11 @@ int main(int argc, char* argv[]) {
 	Isconna::EdgeOnlyCore isc(shapeCMS[0], shapeCMS[1], zeta);
 	// Isconna::EdgeNodeCore isc(shapeCMS[0], shapeCMS[1], zeta);
 	printf("# Records = %d\t// Algorithm is started\n", n);
-	const auto timeBegin = std::chrono::steady_clock::now();
+	const auto timeBegin = steady_clock::now();
 	for (int i = 0; i < n; i++) {
-		src = strtol(iteratorData + 1, const_cast<char**>(&iteratorData), 10);
-		dst = strtol(iteratorData + 1, const_cast<char**>(&iteratorData), 10);
-		ts = strtol(iteratorData + 1, const_cast<char**>(&iteratorData), 10);
+		const int src = strtol(iteratorData + 1, const_cast<char**>(&iteratorData), 10);
+		const int dst = strtol(iteratorData + 1, const_cast<char**>(&iteratorData), 10);
+		const int ts = strtol(iteratorData + 1, const_cast<char**>(&iteratorData), 10);
 		score[i] = isc(src, dst, ts, alpha, beta, gamma);
 		label[i] = static_cast<int>(strtol(iteratorLabel + 1, const_cast<char**>(&iteratorLabel), 10));
 		// fprintf(fileScore, "%f\n", score[i]);
