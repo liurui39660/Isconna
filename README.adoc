@@ -86,7 +86,7 @@ Only for the demo (`example/Demo.cpp`).
 
 Uncomment the `fprintf` in the for loop.
 
-`out/Score.tsv` has 1 column: the final anomaly score.
+`out/Score.txt` has 1 column: the final anomaly score.
 
 === Switch Cores
 
