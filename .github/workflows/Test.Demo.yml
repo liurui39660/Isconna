@@ -1,0 +1,38 @@
+name: Test.Demo
+on:
+  push:
+    paths-ignore:
+      - '**/README.adoc'
+jobs:
+  Standalone:
+    strategy:
+      matrix:
+        os: [windows-latest, ubuntu-latest]
+    name: ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v2
+      - run: mkdir out
+      - name: Extract datasets
+        run: 7z x data/data.zip -odata
+      - name: Configurate
+        run: cmake -DCMAKE_BUILD_TYPE=Release -GNinja -S . -B build/release
+      - name: Build
+        run: cmake --build build/release --target Demo
+      - name: Run (Windows)
+        if: ${{ matrix.os == 'windows-latest' }}
+        run: build\release\Demo.exe
+      - name: Run (Linux)
+        if: ${{ matrix.os == 'ubuntu-latest' }}
+        run: build/release/Demo
+  Docker:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - run: mkdir out
+      - name: Extract datasets
+        run: 7z x data/data.zip -odata
+      - name: Build
+        run: docker build -t isconna .
+      - name: Run
+        run: docker run -v $PWD/data:/Isconna/data -v $PWD/out:/Isconna/out isconna
