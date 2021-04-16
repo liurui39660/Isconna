@@ -3,6 +3,8 @@ Rui LIU (@liurui39660)
 :toc: macro
 :toc-title:
 
+image:https://github.com/liurui39660/Isconna/actions/workflows/Test.Demo.yml/badge.svg[]
+
 C++ implementation of
 
 * https://arxiv.org/pdf/2104.01632.pdf[Isconna: Streaming Anomaly Detection with Frequency and Patterns]. _Rui Liu, Siddharth Bhatia, Bryan Hooi_. (Under Review)
@@ -25,8 +27,9 @@ The following steps are necessary before choosing the standalone or the docker b
 . Open a terminal (Linux/macOS) or a Visual Studio Developer Command Prompt (Windows)
 . `cd` to the project root `Isconna`
 . `mkdir out`
-. `tar -xf data/data.zip -C data`
-** Also works for Windows 10
+. `tar -xf data/data.zip -C data` (Windows)
+** Or `unzip data/data.zip -d data` (Linux/macOS)
+** Or `7z x data/data.zip -odata`
 
 === Standalone
 
