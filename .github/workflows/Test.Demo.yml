@@ -4,31 +4,43 @@ on:
     paths-ignore:
       - '**/README.adoc'
 jobs:
-  Standalone:
-    strategy:
-      matrix:
-        os: [windows-latest, ubuntu-latest]
-    name: ${{ matrix.os }}
-    runs-on: ${{ matrix.os }}
+  Windows:
+    runs-on: windows-latest
     steps:
       - uses: actions/checkout@v2
+        with:
+          submodules: recursive
+      - uses: ilammy/msvc-dev-cmd@v1
       - run: mkdir out
       - name: Extract datasets
         run: 7z x data/data.zip -odata
-      - name: Configurate
-        run: cmake -DCMAKE_BUILD_TYPE=Release -GNinja -S . -B build/release
+      - name: Configure
+        run: cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_C_COMPILER=cl -DCMAKE_CXX_COMPILER=cl -G"NMake Makefiles" -S . -B build/release
       - name: Build
         run: cmake --build build/release --target Demo
-      - name: Run (Windows)
-        if: ${{ matrix.os == 'windows-latest' }}
+      - name: Run
         run: build\release\Demo.exe
-      - name: Run (Linux)
-        if: ${{ matrix.os == 'ubuntu-latest' }}
+  Linux:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          submodules: recursive
+      - run: mkdir out
+      - name: Extract datasets
+        run: 7z x data/data.zip -odata
+      - name: Configure
+        run: cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_C_COMPILER=gcc -DCMAKE_CXX_COMPILER=g++ -S . -B build/release
+      - name: Build
+        run: cmake --build build/release --target Demo
+      - name: Run
         run: build/release/Demo
   Docker:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+        with:
+          submodules: recursive
       - run: mkdir out
       - name: Extract datasets
         run: 7z x data/data.zip -odata
