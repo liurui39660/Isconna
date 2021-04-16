@@ -90,7 +90,7 @@ Uncomment the `fprintf` in the for loop.
 
 === Switch Cores
 
-Cores are declared within the body. You can search for the variable `isc`, then uncomment the chosen core, and comment out the others.
+Cores are declared within the body. You can search for the variable `isc`, then uncomment the desired core, and comment out the others.
 
 === Different Parameters / Datasets
 

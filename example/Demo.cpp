@@ -76,7 +76,7 @@ int main(int argc, char* argv[]) {
 		const int dst = strtol(iteratorData + 1, const_cast<char**>(&iteratorData), 10);
 		const int ts = strtol(iteratorData + 1, const_cast<char**>(&iteratorData), 10);
 		score[i] = isc(src, dst, ts, alpha, beta, gamma);
-		label[i] = static_cast<int>(strtol(iteratorLabel + 1, const_cast<char**>(&iteratorLabel), 10));
+		label[i] = strtol(iteratorLabel + 1, const_cast<char**>(&iteratorLabel), 10);
 		// fprintf(fileScore, "%f\n", score[i]);
 	}
 	printf("Time = %lldms\t// Process is done\n", duration_cast<milliseconds>((steady_clock::now() - timeBegin)).count());
