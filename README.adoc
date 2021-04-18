@@ -121,7 +121,13 @@ You need to prepare three files:
 
 === External Dataset + Custom Runner
 
-This is a header-only implementation, you can use it as a library without additional compilation.
+If you only use Isconna as a library, you can use a sparse clone.
+
+. `git clone --depth=1 --filter=blob:none --sparse https://github.com/liurui39660/Isconna.git`
+. `cd Isconna`
+. `git sparse-checkout set include`
+
+To use Isconna in your code, you need to
 
 . Include headers `include/EdgeNodeCore.hpp` and/or `include/EdgeOnlyCore.hpp`
 . Instantiate cores with required parameters
