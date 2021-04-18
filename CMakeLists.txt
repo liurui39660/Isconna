@@ -5,7 +5,7 @@ PROJECT(Isconna)
 SET(CMAKE_CXX_STANDARD 11)
 
 INCLUDE_DIRECTORIES(
-	src
+	include
 	dep/AUROC
 	dep/mio/include
 	$ENV{VCPKG_INCLUDE_DIR}

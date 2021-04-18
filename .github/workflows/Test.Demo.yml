@@ -1,8 +1,13 @@
 name: Test.Demo
 on:
   push:
-    paths-ignore:
-      - '**/README.adoc'
+    paths:
+      - 'CMakeLists.txt'
+      - 'dep/**'
+      - 'src/**'
+      - 'include/**'
+      - 'example/**'
+      - '.github/workflows/Test.Demo.yml'
 jobs:
   Windows:
     runs-on: windows-latest

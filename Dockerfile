@@ -9,7 +9,7 @@ RUN mkdir /Isconna
 WORKDIR /Isconna
 COPY CMakeLists.txt .
 COPY dep dep
-COPY src src
+COPY include include
 COPY example example
 
 RUN cmake -DCMAKE_BUILD_TYPE=Release -S . -B build/release

@@ -123,7 +123,7 @@ You need to prepare three files:
 
 This is a header-only implementation, you can use it as a library without additional compilation.
 
-. Include headers `src/EdgeNodeCore.hpp` and/or `src/EdgeOnlyCore.hpp`
+. Include headers `include/EdgeNodeCore.hpp` and/or `include/EdgeOnlyCore.hpp`
 . Instantiate cores with required parameters
 ** Number of CMS rows
 ** Number of CMS columns
