@@ -3,7 +3,8 @@ Rui LIU (@liurui39660)
 :toc: macro
 :toc-title:
 
-image:https://github.com/liurui39660/Isconna/actions/workflows/Test.Demo.yml/badge.svg[]
+image:https://github.com/liurui39660/Isconna/actions/workflows/Test.Demo.yml/badge.svg["Test.Demo Status", link="https://github.com/liurui39660/Isconna/actions/workflows/Test.Demo.yml"]
+image:https://badgen.net/badge/Porting/Python/blue["Porting: Python", link="https://github.com/liurui39660/Isconna.Python"]
 
 C++ implementation of
 
