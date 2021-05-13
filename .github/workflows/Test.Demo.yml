@@ -1,5 +1,6 @@
 name: Test.Demo
 on:
+  workflow_dispatch:
   push:
     paths:
       - 'CMakeLists.txt'
