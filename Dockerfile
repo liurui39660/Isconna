@@ -1,7 +1,7 @@
 FROM alpine
 
 # libtbb-dev is in edge/testing, and can't be properly installed by vcpkg
-RUN echo "https://dl-cdn.alpinelinux.org/alpine/edge/testing" >> /etc/apk/repositories
+RUN echo "https://dl-cdn.alpinelinux.org/alpine/edge/community" >> /etc/apk/repositories
 RUN apk update
 RUN apk add make g++ cmake sqlite-dev libtbb-dev
 
