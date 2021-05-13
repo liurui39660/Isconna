@@ -6,7 +6,7 @@ SET(CMAKE_CXX_STANDARD 11)
 
 INCLUDE_DIRECTORIES(
 	include
-	dep/AUROC
+	dep/AUROC/include
 	dep/mio/include
 	$ENV{VCPKG_INCLUDE_DIR}
 )
