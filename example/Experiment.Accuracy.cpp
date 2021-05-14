@@ -1,10 +1,9 @@
 #include <random>
 
 #include <AUROC.hpp>
-#include <sqlite3.h>
 #include <mio/mmap.hpp>
+#include <sqlite3.h>
 #include <tbb/parallel_for_each.h>
-#include <tbb/task_scheduler_init.h>
 
 #include "EdgeOnlyCore.hpp"
 #include "EdgeNodeCore.hpp"
@@ -60,7 +59,6 @@ int main(int argc, char* argv[]) {
 	const std::initializer_list<int[2]> shapesCMS = {{2, 3000}};
 
 	const int numRepeat = 11;
-	const int numThread = tbb::task_scheduler_init::default_num_threads() * 3 / 4; // Do not use all CPU cores
 
 	// Random seed
 	// --------------------------------------------------------------------------------
@@ -110,7 +108,6 @@ int main(int argc, char* argv[]) {
 
 	const char* nameAlg;
 	std::vector<Result> results;
-	tbb::task_scheduler_init scheduler(numThread);
 	tbb::parallel_for_each(expsFreq, [&](double expFreq) {
 		tbb::parallel_for_each(expsWidth, [&](double expWidth) {
 			tbb::parallel_for_each(expsGap, [&](double expGap) {
