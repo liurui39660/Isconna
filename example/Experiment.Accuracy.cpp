@@ -72,7 +72,7 @@ int main(int argc, char* argv[]) {
 	std::error_code err;
 	const auto fileMeta = mio::make_mmap_source(pathMeta, err);
 	if (err) {
-		printf("%s:%d fileMeta: %s\n", __FILE__, __LINE__, err.message().c_str());
+		fprintf(stderr, "%s:%d fileMeta: %s\n", __FILE__, __LINE__, err.message().c_str());
 		exit(EXIT_FAILURE);
 	}
 	const auto n = atoi(fileMeta.data());
@@ -86,12 +86,12 @@ int main(int argc, char* argv[]) {
 	const auto label = new double[n];
 	const auto fileData = mio::make_mmap_source(pathData, err);
 	if (err) {
-		printf("%s:%d fileData: %s\n", __FILE__, __LINE__, err.message().c_str());
+		fprintf(stderr, "%s:%d fileMeta: %s\n", __FILE__, __LINE__, err.message().c_str());
 		exit(EXIT_FAILURE);
 	}
 	const auto fileLabel = mio::make_mmap_source(pathLabel, err);
 	if (err) {
-		printf("%s:%d fileLabel: %s\n", __FILE__, __LINE__, err.message().c_str());
+		fprintf(stderr, "%s:%d fileMeta: %s\n", __FILE__, __LINE__, err.message().c_str());
 		exit(EXIT_FAILURE);
 	}
 	auto it = fileData.begin() - 1;
@@ -129,7 +129,7 @@ int main(int argc, char* argv[]) {
 						std::sort(auroc, auroc + numRepeat);
 						const auto medianAUROC = auroc[numRepeat / 2];
 						printf("%g\t%g\t%g\t%g\t%d\t%d\t%.4f\n", expFreq, expWidth, expGap, decay, shapeCMS[0], shapeCMS[1], medianAUROC);
-						results.push_back({expFreq, expWidth, expGap, decay, shapeCMS[0], shapeCMS[1], medianAUROC});
+						results.emplace_back(expFreq, expWidth, expGap, decay, shapeCMS[0], shapeCMS[1], medianAUROC);
 						delete[] auroc;
 					});
 				});
