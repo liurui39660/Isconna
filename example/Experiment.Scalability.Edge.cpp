@@ -1,8 +1,8 @@
 #include <chrono>
 #include <vector>
 
-#include <sqlite3.h>
 #include <mio/mmap.hpp>
+#include <sqlite3.h>
 
 #include "EdgeOnlyCore.hpp"
 #include "EdgeNodeCore.hpp"
