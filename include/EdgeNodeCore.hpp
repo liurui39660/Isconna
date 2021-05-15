@@ -2,8 +2,10 @@
 
 #include <valarray>
 
+#include "ACore.h"
+
 namespace Isconna {
-struct EdgeNodeCore {
+struct EdgeNodeCore: ACore {
 	static constexpr char nameAlg[] = "Isconna-EN";
 	const int row, col;
 	const double zeta;
@@ -29,7 +31,7 @@ struct EdgeNodeCore {
 		}
 	}
 
-	virtual ~EdgeNodeCore() {
+	~EdgeNodeCore() override {
 		delete[] index;
 		delete[] param;
 	}
@@ -106,7 +108,7 @@ struct EdgeNodeCore {
 		gSc = GTest(gCur[gIndex], gAcc[gIndex], gTime[gIndex]);
 	}
 
-	double operator()(int src, int dst, int ts, double alpha, double beta, double gamma) {
+	double operator()(int src, int dst, int ts, double alpha, double beta, double gamma) override {
 		if (tsInternal < ts) {
 			ResetComponent(efCur, ebCur, ebAcc, egCur, egAcc, egTime);
 			ResetComponent(sfCur, sbCur, sbAcc, sgCur, sgAcc, sgTime);

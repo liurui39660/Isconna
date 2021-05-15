@@ -2,8 +2,10 @@
 
 #include <valarray>
 
+#include "ACore.h"
+
 namespace Isconna {
-struct EdgeOnlyCore {
+struct EdgeOnlyCore: ACore {
 	static constexpr char nameAlg[] = "Isconna-EO";
 	const int row, col; // The same-layout assumption makes this convenient
 	const double zeta; // Scale factor, how much to keep
@@ -25,7 +27,7 @@ struct EdgeOnlyCore {
 		}
 	}
 
-	virtual ~EdgeOnlyCore() {
+	~EdgeOnlyCore() override {
 		delete[] index;
 		delete[] param;
 	}
@@ -54,7 +56,7 @@ struct EdgeOnlyCore {
 		return arg;
 	}
 
-	double operator()(int src, int dst, int ts, double alpha, double beta, double gamma) {
+	double operator()(int src, int dst, int ts, double alpha, double beta, double gamma) override {
 		if (tsInternal < ts) {
 			fCur *= zeta;
 			for (int i = 0, I = row * col; i < I; i++) { // No vectorization
