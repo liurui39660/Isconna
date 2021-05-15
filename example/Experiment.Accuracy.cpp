@@ -157,8 +157,10 @@ int main(int argc, char* argv[]) {
 		sqlite3_bind_int(stmt, sqlite3_bind_parameter_index(stmt, ":row"), result.row);
 		sqlite3_bind_int(stmt, sqlite3_bind_parameter_index(stmt, ":col"), result.col);
 		sqlite3_bind_double(stmt, sqlite3_bind_parameter_index(stmt, ":roc_auc"), result.auroc);
-		if (sqlite3_step(stmt) != SQLITE_DONE)
+		if (sqlite3_step(stmt) != SQLITE_DONE) {
 			printf("%s:%d %s\n", __FILE__, __LINE__, sqlite3_errmsg(db));
+			exit(EXIT_FAILURE);
+		}
 	}
 	sqlite3_finalize(stmt); // language=sql
 	sqlite3_exec(db, "UPDATE [AUROC.Isconna]\nSET alg='E'\nWHERE alg = 'Isconna-EO';\n\nUPDATE [AUROC.Isconna]\nSET alg='EN'\nWHERE alg = 'Isconna-EN';", nullptr, nullptr, nullptr);
