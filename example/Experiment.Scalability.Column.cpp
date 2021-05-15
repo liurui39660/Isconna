@@ -32,7 +32,7 @@ int main(int argc, char* argv[]) {
 	sqlite3_bind_text(stmt, sqlite3_bind_parameter_index(stmt, ":dataset"), nameDataset, -1, SQLITE_STATIC);
 	sqlite3_bind_text(stmt, sqlite3_bind_parameter_index(stmt, ":alg"), nameAlg, -1, SQLITE_STATIC);
 	if (sqlite3_step(stmt) != SQLITE_ROW) {
-		printf("%s:%d %s\n", __FILE__, __LINE__, sqlite3_errmsg(db));
+		fprintf(stderr, "%s:%d %s\n", __FILE__, __LINE__, sqlite3_errmsg(db));
 		exit(EXIT_FAILURE);
 	}
 	const auto expFreq = sqlite3_column_double(stmt, 0);
@@ -95,8 +95,10 @@ int main(int argc, char* argv[]) {
 		sqlite3_bind_int(stmt, sqlite3_bind_parameter_index(stmt, ":row"), shapeCMS[0]);
 		sqlite3_bind_int(stmt, sqlite3_bind_parameter_index(stmt, ":col"), shapeCMS[1]);
 		sqlite3_bind_int64(stmt, sqlite3_bind_parameter_index(stmt, ":exe_time"), times[numRepeat / 2]);
-		if (sqlite3_step(stmt) != SQLITE_DONE)
-			printf("%s:%d %s\n", __FILE__, __LINE__, sqlite3_errmsg(db));
+		if (sqlite3_step(stmt) != SQLITE_DONE) {
+			fprintf(stderr, "%s:%d %s\n", __FILE__, __LINE__, sqlite3_errmsg(db));
+			exit(EXIT_FAILURE);
+		}
 	}
 
 	sqlite3_finalize(stmt);

@@ -162,7 +162,7 @@ int main(int argc, char* argv[]) {
 		sqlite3_bind_int(stmt, sqlite3_bind_parameter_index(stmt, ":col"), result.col);
 		sqlite3_bind_double(stmt, sqlite3_bind_parameter_index(stmt, ":roc_auc"), result.auroc);
 		if (sqlite3_step(stmt) != SQLITE_DONE) {
-			printf("%s:%d %s\n", __FILE__, __LINE__, sqlite3_errmsg(db));
+			fprintf(stderr, "%s:%d %s\n", __FILE__, __LINE__, sqlite3_errmsg(db));
 			exit(EXIT_FAILURE);
 		}
 	}
