@@ -17,7 +17,7 @@ int main(int argc, char* argv[]) {
 	const auto pathMeta = DATASET_DIR"CIC-IDS2018/processed/Meta.txt";
 	const auto pathData = DATASET_DIR"CIC-IDS2018/processed/Data.csv";
 
-	const auto nameAlg = "E"; // Also need to switch algorithm below
+	const auto nameAlg = "Isconna-EO"; // Isconna-EO or Isconna-EN
 	const auto numRepeat = 11;
 
 	// Read best parameter
@@ -85,13 +85,18 @@ int main(int argc, char* argv[]) {
 	for (const auto nn: ns) {
 		for (int rep = 0; rep < numRepeat; rep++) {
 			srand(time(nullptr));
-			Isconna::EdgeOnlyCore isc(shapeCMS[0], shapeCMS[1], decay);
-			// Isconna::EdgeNodeCore isc(shapeCMS[0], shapeCMS[1], decay);
+			Isconna::ACore* isc;
+			if (!strcmp(nameAlg, Isconna::EdgeOnlyCore::nameAlg)) {
+				isc = new Isconna::EdgeOnlyCore(shapeCMS[0], shapeCMS[1], decay);
+			} else if (!strcmp(nameAlg, Isconna::EdgeNodeCore::nameAlg)) {
+				isc = new Isconna::EdgeNodeCore(shapeCMS[0], shapeCMS[1], decay);
+			} // else SelfDestruction();
 			const auto timeBegin = high_resolution_clock::now();
 			for (int i = 0; i < nn; i++)
-				score[i] = isc(src[i], dst[i], ts[i], expFreq, expWidth, expGap);
+				score[i] = (*isc)(src[i], dst[i], ts[i], expFreq, expWidth, expGap);
 			times[rep] = duration_cast<milliseconds>(high_resolution_clock::now() - timeBegin).count();
 			printf("%02d %lld\n", rep, times[rep]);
+			delete isc;
 		}
 		std::sort(times, times + numRepeat);
 

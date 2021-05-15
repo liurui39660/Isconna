@@ -37,7 +37,7 @@ int main(int argc, char* argv[]) {
 	// const auto pathMeta = DATASET_DIR"CIC-DDoS2019/processed/Meta.txt";
 	// const auto pathData = DATASET_DIR"CIC-DDoS2019/processed/Data.csv";
 
-	const auto nameAlg = "E"; // Only for parameter retrieval, still need to uncomment the corresponding core
+	const auto nameAlg = "Isconna-EO"; // Isconna-EO or Isconna-EN
 	const auto numRepeat = 11;
 
 	// Read best parameter
@@ -59,9 +59,7 @@ int main(int argc, char* argv[]) {
 	const auto expWidth = sqlite3_column_double(stmt, 1);
 	const auto expGap = sqlite3_column_double(stmt, 2);
 	const auto decay = sqlite3_column_double(stmt, 3);
-	int shapeCMS[2];
-	shapeCMS[0] = sqlite3_column_int(stmt, 4);
-	shapeCMS[1] = sqlite3_column_int(stmt, 5);
+	const int shapeCMS[2] = {sqlite3_column_int(stmt, 4), sqlite3_column_int(stmt, 5)};
 	sqlite3_finalize(stmt);
 
 	// Read meta (total number of records)
@@ -93,13 +91,18 @@ int main(int argc, char* argv[]) {
 	const auto times = new time_t[numRepeat];
 	for (int rep = 0; rep < numRepeat; rep++) {
 		srand(time(nullptr));
-		Isconna::EdgeOnlyCore isc(shapeCMS[0], shapeCMS[1], decay);
-		// Isconna::EdgeNodeCore isc(shapeCMS[0], shapeCMS[1], decay);
+		Isconna::ACore* isc;
+		if (!strcmp(nameAlg, Isconna::EdgeOnlyCore::nameAlg)) {
+			isc = new Isconna::EdgeOnlyCore(shapeCMS[0], shapeCMS[1], decay);
+		} else if (!strcmp(nameAlg, Isconna::EdgeNodeCore::nameAlg)) {
+			isc = new Isconna::EdgeNodeCore(shapeCMS[0], shapeCMS[1], decay);
+		} // else SelfDestruction();
 		const auto timeBegin = high_resolution_clock::now();
 		for (int i = 0; i < n; i++)
-			score[i] = isc(src[i], dst[i], ts[i], expFreq, expWidth, expGap);
+			score[i] = (*isc)(src[i], dst[i], ts[i], expFreq, expWidth, expGap);
 		times[rep] = duration_cast<milliseconds>(high_resolution_clock::now() - timeBegin).count();
 		printf("%02d %lld\n", rep, times[rep]);
+		delete isc;
 	}
 	std::sort(times, times + numRepeat);
 
@@ -121,8 +124,7 @@ int main(int argc, char* argv[]) {
 		fprintf(stderr, "%s:%d %s\n", __FILE__, __LINE__, sqlite3_errmsg(db));
 		exit(EXIT_FAILURE);
 	}
-	sqlite3_finalize(stmt); // language=sql
-	sqlite3_exec(db, "UPDATE [Time.Isconna]\nSET alg='E'\nWHERE alg = 'Isconna-EO';\n\nUPDATE [Time.Isconna]\nSET alg='EN'\nWHERE alg = 'Isconna-EN';", nullptr, nullptr, nullptr);
+	sqlite3_finalize(stmt);
 	sqlite3_close(db);
 
 	// Clean up
