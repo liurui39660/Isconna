@@ -58,6 +58,7 @@ int main(int argc, char* argv[]) {
 	const auto decays = {0.0, 0.3, 0.5, 0.7};
 	const std::initializer_list<int[2]> shapesCMS = {{2, 3000}};
 
+	const auto nameAlg = "Isconna-EO"; // Isconna-EO or Isconna-EN
 	const int numRepeat = 11;
 
 	// Random seed
@@ -106,7 +107,6 @@ int main(int argc, char* argv[]) {
 	// Do the magic
 	// --------------------------------------------------------------------------------
 
-	const char* nameAlg;
 	std::vector<Result> results;
 	tbb::parallel_for_each(expsFreq, [&](double expFreq) {
 		tbb::parallel_for_each(expsWidth, [&](double expWidth) {
@@ -117,14 +117,18 @@ int main(int argc, char* argv[]) {
 						const auto auroc = new double[numRepeat];
 						tbb::parallel_for(0, numRepeat, [&](int rep) {
 							srand(randint(eng));
-							Isconna::EdgeOnlyCore isc(shapeCMS[0], shapeCMS[1], decay);
-							// Isconna::EdgeNodeCore isc(shapeCMS[0], shapeCMS[1], decay);
-							nameAlg = isc.nameAlg;
+							Isconna::ACore* isc;
+							if (!strcmp(nameAlg, Isconna::EdgeOnlyCore::nameAlg)) {
+								isc = new Isconna::EdgeOnlyCore(shapeCMS[0], shapeCMS[1], decay);
+							} else if (!strcmp(nameAlg, Isconna::EdgeNodeCore::nameAlg)) {
+								isc = new Isconna::EdgeNodeCore(shapeCMS[0], shapeCMS[1], decay);
+							} // else SelfDestruction();
 							const auto score = new double[n];
 							for (int i = 0; i < n; i++)
-								score[i] = isc(src[i], dst[i], ts[i], expFreq, expWidth, expGap);
+								score[i] = (*isc)(src[i], dst[i], ts[i], expFreq, expWidth, expGap);
 							auroc[rep] = AUROC(label, score, n);
 							delete[] score;
+							delete isc;
 						});
 						std::sort(auroc, auroc + numRepeat);
 						const auto medianAUROC = auroc[numRepeat / 2];
@@ -162,8 +166,7 @@ int main(int argc, char* argv[]) {
 			exit(EXIT_FAILURE);
 		}
 	}
-	sqlite3_finalize(stmt); // language=sql
-	sqlite3_exec(db, "UPDATE [AUROC.Isconna]\nSET alg='E'\nWHERE alg = 'Isconna-EO';\n\nUPDATE [AUROC.Isconna]\nSET alg='EN'\nWHERE alg = 'Isconna-EN';", nullptr, nullptr, nullptr);
+	sqlite3_finalize(stmt);
 	sqlite3_close(db);
 
 	// Clean up
