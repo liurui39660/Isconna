@@ -2,7 +2,7 @@
 
 #include <valarray>
 
-#include "ACore.h"
+#include "ACore.hpp"
 
 namespace Isconna {
 struct EdgeOnlyCore: ACore {
