@@ -44,7 +44,7 @@ struct ACore { // A for abstract
 
 	virtual void Update(int a, int b, double& fSc, double& wSc, double& gSc, CMSGroup& cms) const {
 		double fMinCur = INFINITY, fMinAcc = INFINITY; // Result of CMS Query
-		auto wMinTime = INT_MAX, gMinTime = INT_MAX; // INT_MAX
+		auto wMinTime = INT32_MAX, gMinTime = INT32_MAX;
 		unsigned wIndex, gIndex; // Result of CMS ArgQuery
 		for (int i = 0; i < row; i++) {
 			const auto j = i * col + ((a + 347 * b) * param[i] + param[i + row]) % col; // CMS Hash; 347 is a magic number
