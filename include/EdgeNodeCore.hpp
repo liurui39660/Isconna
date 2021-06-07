@@ -22,9 +22,7 @@ struct EdgeNodeCore: ACore {
 		Update(src, dst, edge, efSc, ewSc, egSc);
 		Update(src, 000, source, sfSc, swSc, sgSc);
 		Update(dst, 000, destination, dfSc, dwSc, dgSc);
-		return pow(std::max({efSc, sfSc, dfSc}), alpha)
-			* pow(std::max({ewSc, swSc, dwSc}), beta)
-			* pow(std::max({egSc, sgSc, dgSc}), gamma);
+		return pow(std::max({efSc, sfSc, dfSc}), alpha) * pow(std::max({ewSc, swSc, dwSc}), beta) * pow(std::max({egSc, sgSc, dgSc}), gamma);
 	}
 };
 }
