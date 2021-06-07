@@ -19,9 +19,9 @@ struct EdgeNodeCore: ACore {
 			tsInternal = ts;
 		}
 		double efSc, ewSc, egSc, sfSc, swSc, sgSc, dfSc, dwSc, dgSc;
-		Update(src, dst, efSc, ewSc, egSc, edge);
-		Update(src, 000, sfSc, swSc, sgSc, source);
-		Update(dst, 000, dfSc, dwSc, dgSc, destination);
+		Update(src, dst, edge, efSc, ewSc, egSc);
+		Update(src, 000, source, sfSc, swSc, sgSc);
+		Update(dst, 000, destination, dfSc, dwSc, dgSc);
 		return pow(std::max({efSc, sfSc, dfSc}), alpha)
 			* pow(std::max({ewSc, swSc, dwSc}), beta)
 			* pow(std::max({egSc, sgSc, dgSc}), gamma);

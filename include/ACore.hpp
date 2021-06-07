@@ -42,7 +42,7 @@ struct ACore { // A for abstract
 		cms.bCur = false;
 	}
 
-	virtual void Update(int a, int b, double& fSc, double& wSc, double& gSc, CMSGroup& cms) const {
+	virtual void Update(int a, int b, CMSGroup& cms, double& fSc, double& wSc, double& gSc) const {
 		double fMinCur = INFINITY, fMinAcc = INFINITY; // Result of CMS Query
 		auto wMinTime = INT32_MAX, gMinTime = INT32_MAX;
 		unsigned wIndex, gIndex; // Result of CMS ArgQuery

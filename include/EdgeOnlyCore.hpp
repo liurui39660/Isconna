@@ -17,7 +17,7 @@ struct EdgeOnlyCore: ACore {
 			tsInternal = ts;
 		}
 		double fSc, wSc, gSc;
-		Update(src, dst, fSc, wSc, gSc, edge);
+		Update(src, dst, edge, fSc, wSc, gSc);
 		return pow(fSc, alpha) * pow(wSc, beta) * pow(gSc, gamma);
 	}
 };
